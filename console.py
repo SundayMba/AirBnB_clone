@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import cmd
+from models.base_model import BaseModel
 """Console module
 this module defines console program entry point
 """
@@ -28,6 +29,17 @@ class HBNBCommand(cmd.Cmd):
         make sure nothing is executed when the line is empty
         """
         return
+
+    def do_create(self, model):
+        """Create an instance of BaseModel """
+        if model == "":
+            print("** class name missing **")
+        elif model != "BaseModel":
+            print("** class doesn't exist **")
+        else:
+            my_model = BaseModel()
+            my_model.save()
+            print(my_model.id)
 
 
 if __name__ == "__main__":
