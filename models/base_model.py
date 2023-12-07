@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from datetime import datetime
 import uuid
+from models import storage
 """ Base Model module for every other classes """
 
 
@@ -43,14 +44,20 @@ class BaseModel:
         """
         self.updated_at = datetime.now()
 
+        # Create a new entry in the storage file
+        storage.new(self)
+
+        # Save the entry in the file
+        storage.save()
+
     def to_dict(self):
         """
             create a dictionary representation with “simple object type"
             of our BaseModel. dictionary contains all keys/values of
-            __dict__ of the instance
+            __dict__ of the instance attribute
         """
-        my_dict = self.__dict__
-        my_dict["created_at"] = datetime.now().isoformat()
-        my_dict["updated_at"] = datetime.now().isoformat()
+        my_dict = self.__dict__.copy()
+        my_dict["created_at"] = my_dict["created_at"].isoformat()
+        my_dict["updated_at"] = my_dict["updated_at"].isoformat()
         my_dict["__class__"] = self.__class__.__name__
         return my_dict
