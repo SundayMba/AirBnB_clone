@@ -54,7 +54,7 @@ class BaseModel:
         """
             create a dictionary representation with “simple object type"
             of our BaseModel. dictionary contains all keys/values of
-            __dict__ of the instance
+            __dict__ of the instance attribute
         """
         my_dict = self.__dict__.copy()
         my_dict["created_at"] = my_dict["created_at"].isoformat()
