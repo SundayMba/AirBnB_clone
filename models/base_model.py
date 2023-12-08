@@ -65,8 +65,24 @@ class BaseModel:
     @classmethod
     def create(cls, **dictionary):
         """ Recreate the exact instance of the given class """
-        if cls.__name__ == "BaseModel":
-            return BaseModel(**dictionary)
-        elif cls.__name__ == "User":
-            from models.user import User
-            return User(**dictionary)
+
+        # inline import to avoid circular import error
+        from models.user import User
+        from models.place import Place
+        from models.city import City
+        from models.amenity import Amenity
+        from models.state import State
+        from models.review import Review
+
+        obj_dict = {
+                "BaseModel": BaseModel,
+                "User": User,
+                "Place": Place,
+                "State": State,
+                "Review": Review,
+                "City": City,
+                "Amenity": Amenity
+                }
+        class_name = obj_dict[cls.__name__]
+        obj = class_name(**dictionary)
+        return obj
