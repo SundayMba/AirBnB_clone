@@ -54,8 +54,13 @@ class FileStorage:
 
             # BaseModel imported here to avoid circular import
             from models.base_model import BaseModel
+            from models.user import User
 
             # Deserialized back to python dictionary
             object_dict = json.loads(json_str)
             for key, value in object_dict.items():
-                FileStorage.__objects[key] = BaseModel(**value)
+                if value['__class__'] == "BaseModel":
+                    obj = BaseModel(**value)
+                elif value['__class__'] == "User":
+                    obj = User(**value)
+                FileStorage.__objects[key] = obj

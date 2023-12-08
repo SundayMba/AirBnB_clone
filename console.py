@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import cmd
 from models.base_model import BaseModel
+from models.user import User
 from models import storage
 """Console module
 this module defines console program entry point
@@ -80,13 +81,16 @@ class HBNBCommand(cmd.Cmd):
         """Create an instance of BaseModel """
         if model == "":
             self.missing_name()
-        elif model != "BaseModel":
-            self.wrong_class()
-        else:
+        elif model == "BaseModel":
             my_model = BaseModel()
             my_model.save()
             print(my_model.id)
-
+        elif model == "User":
+            my_model = User()
+            my_model.save()
+            print(my_model.id)
+        else:
+            self.wrong_class()
     def do_show(self, args):
         """ show an instance of BaseModel """
         args_list = args.split()
@@ -124,8 +128,9 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ print all instances """
         my_storage = storage.all()
+        models = ['User', 'BaseModel']
         obj_list = []
-        if args == "" or (args == "BaseModel" and my_storage == {}):
+        if args == "" or (args in models and my_storage == {}):
             for user_id in my_storage.keys():
                 obj_list.append(str(my_storage[user_id]))
             print(obj_list)
