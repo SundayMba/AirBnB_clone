@@ -43,6 +43,7 @@ class HBNBCommand(cmd.Cmd):
             return val
         except ValueError:
             return value
+
     # Custom prompt
     prompt = "(hbnb) "
 
@@ -57,6 +58,17 @@ class HBNBCommand(cmd.Cmd):
         Mark End of the file => Quit the program
         """
         return True
+
+    def handle_empty_dict(self, args_list):
+        """ handle case when dictionary is empty """
+        if args_list[0] != "BaseModel":
+            self.wrong_class()
+            return
+        if args_list[0] == "BaseModel" and len(args_list) == 1:
+            self.missing_id()
+            return
+        self.invalid_instance()
+        return
 
     def emptyline(self):
         """emptyline + Enter
@@ -82,13 +94,14 @@ class HBNBCommand(cmd.Cmd):
         if len(args_list) == 0:
             self.missing_name()
             return
-        class_exit = False
-        id_exit = False
+        class_exist = False
+        id_exist = False
+
+        # handle case when storage is empty
         if my_storage == {}:
-            if args_list[0] != "BaseModel":
-                self.invalid_instance()
-                return
-            if
+            self.handle_empty_dict(args_list)
+            return
+
         for key, obj in my_storage.items():
             class_name = obj.__class__.__name__
             if class_name == args_list[0]:
@@ -101,28 +114,34 @@ class HBNBCommand(cmd.Cmd):
                     return
 
         # Check if class and id exist
-        if not class_exit:
+        if not class_exist:
             self.wrong_class()
             return
-        if not id_exist():
+        if not id_exist:
             self.invalid_instance()
             return
 
     def do_all(self, args):
         """ print all instances """
         my_storage = storage.all()
-        if args == "":
+        obj_list = []
+        if args == "" or (args == "BaseModel" and my_storage == {}):
             for user_id in my_storage.keys():
-                print(my_storage[user_id])
+                obj_list.append(str(my_storage[user_id]))
+            print(obj_list)
             return
-        class_exit = False
+        class_exist = False
         for key, obj in my_storage.items():
             class_name = obj.__class__.__name__
             if class_name == args:
-                print(obj)
-                class_exit = True
+                obj_list.append(str(obj))
+                class_exist = True
 
-        if not class_exit:
+        if class_exist:
+            print(obj_list)
+            return
+
+        if not class_exist:
             self.wrong_class()
 
     def do_destroy(self, args):
@@ -132,8 +151,14 @@ class HBNBCommand(cmd.Cmd):
         if len(args_list) == 0:
             self.missing_name()
             return
-        class_exit = False
+        class_exist = False
         id_exist = False
+
+        # handle case when storage is empty
+        if my_storage == {}:
+            self.handle_empty_dict(args_list)
+            return
+
         for key, obj in my_storage.items():
             class_name = obj.__class__.__name__
             if class_name == args_list[0]:
@@ -148,7 +173,7 @@ class HBNBCommand(cmd.Cmd):
                     return
 
         # check if class and id doesnt exist
-        if not class_exit:
+        if not class_exist:
             self.wrong_class()
             return
         if not id_exist:
@@ -160,13 +185,18 @@ class HBNBCommand(cmd.Cmd):
         args_list = args.split()
         if len(args_list) == 0:
             self.missing_name()
+            return
+
+        # handle case when storage is empty
+        if my_storage == {}:
+            self.handle_empty_dict(args_list)
         else:
-            class_exit = False
+            class_exist = False
             id_exist = False
             for key, obj in my_storage.items():
                 class_name = obj.__class__.__name__
                 if class_name == args_list[0]:
-                    class_exit = True
+                    class_exist = True
                     if len(args_list) == 1:
                         self.missing_id()
                         return
@@ -188,7 +218,7 @@ class HBNBCommand(cmd.Cmd):
                             return
 
             # Check if class name or id does not match
-            if not class_exit:
+            if not class_exist:
                 self.wrong_class()
             if not id_exist:
                 self.invalid_instance()
