@@ -25,6 +25,24 @@ class HBNBCommand(cmd.Cmd):
         """ print instance id is missing message """
         print("** instance id missing **")
 
+    @staticmethod
+    def invalid_instance():
+        """ print no instance found """
+        print("** no instance found **")
+
+    def value_conversion(self, value):
+        """ perform value conversion """
+
+        # Strip off the double quote [""] around values
+        value = value.strip('"')
+        if value.isdecimal():
+            val = int(value)
+            return val
+        try:
+            val = float(value)
+            return val
+        except ValueError:
+            return value
     # Custom prompt
     prompt = "(hbnb) "
 
@@ -60,30 +78,120 @@ class HBNBCommand(cmd.Cmd):
     def do_show(self, args):
         """ show an instance of BaseModel """
         args_list = args.split()
+        my_storage = storage.all()
         if len(args_list) == 0:
             self.missing_name()
-        elif len(args_list) == 1 and args != "BaseModel":
-            self.wrong_class()
-        elif len(args_list) == 1 and args == "BaseModel":
-            self.missing_id()
-        else:
-            my_storage = storage.all()
-            for user_id, user_data  in my_storage.items():
-                if args_list[1] == user_data.id:
-                    print(user_data)
+            return
+        class_exit = False
+        id_exit = False
+        if my_storage == {}:
+            if args_list[0] != "BaseModel":
+                self.invalid_instance()
+                return
+            if
+        for key, obj in my_storage.items():
+            class_name = obj.__class__.__name__
+            if class_name == args_list[0]:
+                class_exist = True
+                if len(args_list) == 1:
+                    self.missing_id()
                     return
-            print("** no instance found **")
+                if obj.id == args_list[1]:
+                    print(obj)
+                    return
 
-    def do_all(self, class_name):
+        # Check if class and id exist
+        if not class_exit:
+            self.wrong_class()
+            return
+        if not id_exist():
+            self.invalid_instance()
+            return
+
+    def do_all(self, args):
         """ print all instances """
-        if class_name == "" or class_name == "BaseModel":
-            my_storage = storage.all()
+        my_storage = storage.all()
+        if args == "":
             for user_id in my_storage.keys():
                 print(my_storage[user_id])
-        else:
+            return
+        class_exit = False
+        for key, obj in my_storage.items():
+            class_name = obj.__class__.__name__
+            if class_name == args:
+                print(obj)
+                class_exit = True
+
+        if not class_exit:
             self.wrong_class()
 
+    def do_destroy(self, args):
+        """ delete a given instance from the json file """
+        args_list = args.split()
+        my_storage = storage.all()
+        if len(args_list) == 0:
+            self.missing_name()
+            return
+        class_exit = False
+        id_exist = False
+        for key, obj in my_storage.items():
+            class_name = obj.__class__.__name__
+            if class_name == args_list[0]:
+                class_exist = True
+                if len(args_list) == 1:
+                    self.missing_id()
+                    return
+                if obj.id == args_list[1]:
+                    id_exist = True
+                    storage.delete(key)
+                    storage.save()
+                    return
 
+        # check if class and id doesnt exist
+        if not class_exit:
+            self.wrong_class()
+            return
+        if not id_exist:
+            self.invalid_instance()
+
+    def do_update(self, args):
+        """ update an instance """
+        my_storage = storage.all()
+        args_list = args.split()
+        if len(args_list) == 0:
+            self.missing_name()
+        else:
+            class_exit = False
+            id_exist = False
+            for key, obj in my_storage.items():
+                class_name = obj.__class__.__name__
+                if class_name == args_list[0]:
+                    class_exit = True
+                    if len(args_list) == 1:
+                        self.missing_id()
+                        return
+                    if obj.id == args_list[1]:
+                        id_exist = True
+                        if len(args_list) == 2:
+                            print("** attribute name missing **")
+                            return
+                        if len(args_list) == 3:
+                            print("** value missing **")
+                            return
+                        attr = args_list[2]
+                        value = args_list[3]
+                        c_a = "created_at"
+                        u_a = "updated_at"
+                        if attr != "id" and attr != c_a and attr != u_a:
+                            val = self.value_conversion(value)
+                            setattr(obj, attr, val)
+                            return
+
+            # Check if class name or id does not match
+            if not class_exit:
+                self.wrong_class()
+            if not id_exist:
+                self.invalid_instance()
 
 
 if __name__ == "__main__":

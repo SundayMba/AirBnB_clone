@@ -36,6 +36,11 @@ class FileStorage:
         with open(FileStorage.__file_path, "w") as file:
             file.write(json_str)
 
+    def delete(self, obj_id):
+        """ delete an object from json file """
+        del self.__objects[obj_id]
+        self.save()
+
     def reload(self):
         """
             deserializes the JSON file to __objects (only if the JSON file
