@@ -1,6 +1,12 @@
 #!/usr/bin/python3
 import cmd
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.review import Review
+from models.amenity import Amenity
+from models.place import Place
+from models.city import City
 from models import storage
 """Console module
 this module defines console program entry point
@@ -61,10 +67,11 @@ class HBNBCommand(cmd.Cmd):
 
     def handle_empty_dict(self, args_list):
         """ handle case when dictionary is empty """
-        if args_list[0] != "BaseModel":
+        m = ['BaseModel', 'Place', 'User', 'City', 'State', 'Amenity', 'Review']
+        if args_list[0] not in m:
             self.wrong_class()
             return
-        if args_list[0] == "BaseModel" and len(args_list) == 1:
+        if args_list[0] in m and len(args_list) == 1:
             self.missing_id()
             return
         self.invalid_instance()
@@ -78,12 +85,22 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, model):
         """Create an instance of BaseModel """
+        obj_dict = {
+                "BaseModel": BaseModel,
+                "User": User,
+                "Place": Place,
+                "City": City,
+                "Amenity": Amenity,
+                "State": State,
+                "Review": Review
+                }
         if model == "":
             self.missing_name()
-        elif model != "BaseModel":
+        elif model not in obj_dict: # if model is not one of the key in dict
             self.wrong_class()
         else:
-            my_model = BaseModel()
+            obj = obj_dict[model]
+            my_model = obj()
             my_model.save()
             print(my_model.id)
 
@@ -124,8 +141,9 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ print all instances """
         my_storage = storage.all()
+        m = ['BaseModel', 'Place', 'User', 'City', 'State', 'Amenity', 'Review']
         obj_list = []
-        if args == "" or (args == "BaseModel" and my_storage == {}):
+        if args == "" or (args in m and my_storage == {}):
             for user_id in my_storage.keys():
                 obj_list.append(str(my_storage[user_id]))
             print(obj_list)

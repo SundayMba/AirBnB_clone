@@ -52,10 +52,30 @@ class FileStorage:
             with open(FileStorage.__file_path, "r") as file:
                 json_str = file.read()
 
-            # BaseModel imported here to avoid circular import
+            # models imported here to avoid circular import
             from models.base_model import BaseModel
+            from models.user import User
+            from models.place import Place
+            from models.review import Review
+            from models.amenity import Amenity
+            from models.city import City
+            from models.state import State
 
             # Deserialized back to python dictionary
             object_dict = json.loads(json_str)
             for key, value in object_dict.items():
-                FileStorage.__objects[key] = BaseModel(**value)
+                if value['__class__'] == "BaseModel":
+                    obj = BaseModel(**value)
+                elif value['__class__'] == "User":
+                    obj = User(**value)
+                elif value['__class__'] == "Place":
+                    obj = Place(**value)
+                elif value['__class__'] == "City":
+                    obj = City(**value)
+                elif value['__class__'] == "State":
+                    obj = State(**value)
+                elif value['__class__'] == "Amenity":
+                    obj = Amenity(**value)
+                elif value['__class__'] == "Review":
+                    obj = Review(**value)
+                FileStorage.__objects[key] = obj
