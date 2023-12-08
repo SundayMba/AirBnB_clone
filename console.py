@@ -69,7 +69,7 @@ class HBNBCommand(cmd.Cmd):
     def precmd(self, line):
         user_all = re.compile(r'^(\D+)\.all\(\)')
         user_count = re.compile(r'^(\D+)\.count\(\)')
-        user_show = re.compile(r'^(\D+)\.(\D+)\("(.+)"\)')
+        user_show = re.compile(r'^(\D+)\.(\D+)\([\'"](.+)[\'"]\)')
         update = re.compile(r'^(\D+)\.update\("(.+)", "(.+)", "(.+)"\)')
 
         if update_match := update.match(line):
