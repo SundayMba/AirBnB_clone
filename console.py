@@ -67,7 +67,14 @@ class HBNBCommand(cmd.Cmd):
 
     def handle_empty_dict(self, args_list):
         """ handle case when dictionary is empty """
-        m = ['BaseModel', 'Place', 'User', 'City', 'State', 'Amenity', 'Review']
+        m = ['BaseModel',
+             'Place',
+             'User',
+             'City',
+             'State',
+             'Amenity',
+             'Review'
+             ]
         if args_list[0] not in m:
             self.wrong_class()
             return
@@ -96,7 +103,7 @@ class HBNBCommand(cmd.Cmd):
                 }
         if model == "":
             self.missing_name()
-        elif model not in obj_dict: # if model is not one of the key in dict
+        elif model not in obj_dict:
             self.wrong_class()
         else:
             obj = obj_dict[model]
@@ -141,7 +148,14 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ print all instances """
         my_storage = storage.all()
-        m = ['BaseModel', 'Place', 'User', 'City', 'State', 'Amenity', 'Review']
+        m = ['BaseModel',
+             'Place',
+             'User',
+             'City',
+             'State',
+             'Amenity',
+             'Review'
+             ]
         obj_list = []
         if args == "" or (args in m and my_storage == {}):
             for user_id in my_storage.keys():
