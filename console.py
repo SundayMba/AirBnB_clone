@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import cmd
+import re
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -65,6 +66,31 @@ class HBNBCommand(cmd.Cmd):
         """
         return True
 
+    def precmd(self, line):
+        user_all = re.compile(r'^(\D+)\.all\(\)')
+        user_count = re.compile(r'^(\D+)\.count\(\)')
+        user_show = re.compile(r'^(\D+)\.(\D+)\("(.+)"\)')
+        update = re.compile(r'^(\D+)\.update\("(.+)", "(.+)", "(.+)"\)')
+
+        if update_match := update.match(line):
+            model = update_match.group(1)
+            id_param = update_match.group(2)
+            attr = update_match.group(3)
+            value = update_match.group(4)
+            return f'update {model} {id_param} {attr} "{value}"'
+        elif user_match := user_all.match(line):
+            return f"all {user_match.group(1)}"
+        elif user_show_match := user_show.match(line):
+            model = user_show_match.group(1)
+            command = user_show_match.group(2)
+            id_param = user_show_match.group(3)
+            return f"{command} {model} {id_param}"
+        elif user_count_match := user_count.match(line):
+            model = user_count_match.group(1)
+            return f"count {model}"
+        else:
+            return line
+
     def handle_empty_dict(self, args_list):
         """ handle case when dictionary is empty """
         m = ['BaseModel',
@@ -110,6 +136,19 @@ class HBNBCommand(cmd.Cmd):
             my_model = obj()
             my_model.save()
             print(my_model.id)
+
+    def do_count(self, model):
+        """ count number of instance a model appear in the json file """
+        my_storage = storage.all()
+        user_count = 0
+        if my_storage == {}:
+            print(user_count)
+        else:
+            for key, user in my_storage.items():
+                class_name = user.__class__.__name__
+                if model == class_name:
+                    user_count += 1
+            print(user_count)
 
     def do_show(self, args):
         """ show an instance of BaseModel """
