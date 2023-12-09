@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""Console module
+this module defines console program entry point
+"""
 import cmd
 import re
 import json
@@ -11,9 +14,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.city import City
 from models import storage
-"""Console module
-this module defines console program entry point
-"""
+
 
 
 class HBNBCommand(cmd.Cmd):
