@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import cmd
 import re
+import json
+import os
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -51,8 +53,11 @@ class HBNBCommand(cmd.Cmd):
         except ValueError:
             return value
 
-    # Custom prompt
-    prompt = "(hbnb) "
+    # Handle interactive mode and non interactive mode
+    if os.isatty(0):
+        prompt = "(hbnb) "
+    else:
+        prompt = ""
 
     def do_quit(self, args):
         """usage: (hbnb) quit
@@ -66,12 +71,58 @@ class HBNBCommand(cmd.Cmd):
         """
         return True
 
+    def update_dict(self, line):
+        """ update an instance Given update value in form of dictionary """
+        model, id_param, dict_val = line
+        my_storage = storage.all()
+        if my_storage == {}:
+            self.handle_empty_dict([model, id_param])
+            return
+        models = [
+                "BaseModel",
+                "User",
+                "Place",
+                "Review",
+                "City",
+                "State",
+                "Amenity"
+                ]
+        if model not in models:
+            self.missing_name()
+            return
+        elif id_param == "":
+            self.missing_id()
+            return
+        else:
+            obj_updated = False
+            id_model = f"{model}.{id_param}"
+            try:
+                obj = my_storage[id_model]
+                for attr_name, attr_value in dict_val.items():
+                    setattr(obj, attr_name, attr_value)
+                    obj_updated = True
+                if obj_updated:
+                    obj.save()
+            except Exception:
+                self.invalid_instance()
+
     def precmd(self, line):
+        """ preprocess the input command before main process occur """
         user_all = re.compile(r'^(\D+)\.all\(\)')
         user_count = re.compile(r'^(\D+)\.count\(\)')
-        user_show = re.compile(r'^(\D+)\.(\D+)\([\'"](.+)[\'"]\)')
-        update = re.compile(r'^(\D+)\.update\("(.+)", "(.+)", "(.+)"\)')
+        user_show = re.compile(r'^(\D+)\.(\D+)\([\'"](.*)[\'"]\)')
+        update = re.compile(r'^(\D+)\.update\("(.*)", "(.*)", "(.*)"\)')
+        update_dict = re.compile(r'^(\D+)\.update\("(.*)", (\{.*})\)')
 
+        if update_dict_match := update_dict.match(line):
+            my_storage = storage.all()
+            model = update_dict_match.group(1)
+            id_param = update_dict_match.group(2)
+            dict_str = update_dict_match.group(3)
+            json_str = dict_str.replace("'", '"')
+            actual_dict = json.loads(json_str)
+            self.update_dict((model, id_param, actual_dict))
+            return ""
         if update_match := update.match(line):
             model = update_match.group(1)
             id_param = update_match.group(2)
@@ -286,6 +337,7 @@ class HBNBCommand(cmd.Cmd):
                         if attr != "id" and attr != c_a and attr != u_a:
                             val = self.value_conversion(value)
                             setattr(obj, attr, val)
+                            obj.save()
                             return
 
             # Check if class name or id does not match
