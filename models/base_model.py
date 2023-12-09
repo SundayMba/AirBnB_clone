@@ -15,10 +15,11 @@ class BaseModel:
             <created_at>:  datetime - assign with the current datetime
             <updated_at>:  datetime - assign with the current datetime
         """
-        if kwargs == {}:
+        if kwargs == {} or kwargs is None:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
+            storage.new(self)
         else:
             for key, value in kwargs.items():
 
@@ -43,9 +44,6 @@ class BaseModel:
             with the current datetime
         """
         self.updated_at = datetime.now()
-
-        # Create a new entry in the storage file
-        storage.new(self)
 
         # Save the entry in the file
         storage.save()
