@@ -16,7 +16,6 @@ from models.city import City
 from models import storage
 
 
-
 class HBNBCommand(cmd.Cmd):
     """ this class is a subclass for cmd.Cmd class """
 
@@ -166,7 +165,7 @@ class HBNBCommand(cmd.Cmd):
         """emptyline + Enter
         make sure nothing is executed when the line is empty
         """
-        return
+        pass
 
     def do_create(self, model):
         """Create an instance of BaseModel """
