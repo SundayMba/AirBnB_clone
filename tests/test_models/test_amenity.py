@@ -45,6 +45,7 @@ class TestAmenity(unittest.TestCase):
     #    self.assertTrue('name' in self.amenity.__dict__)
     # OR
     a = Amenity()
+
     def test_has_attributes(self):
         """Unittest Checks if the attributes exist"""
         self.assertTrue(hasattr(self.a, 'name'))

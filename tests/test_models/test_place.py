@@ -110,6 +110,7 @@ class TestPlace(unittest.TestCase):
         with self.assertRaises(TypeError):
             pl.save(None)
 
+
 class TestPlace_to_dict(unittest.TestCase):
     """
     Unittests test the to_dict method of the Place class.

@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""Console module
+this module defines console program entry point
+"""
 import cmd
 import re
 import json
@@ -11,9 +14,6 @@ from models.amenity import Amenity
 from models.place import Place
 from models.city import City
 from models import storage
-"""Console module
-this module defines console program entry point
-"""
 
 
 class HBNBCommand(cmd.Cmd):
@@ -165,7 +165,7 @@ class HBNBCommand(cmd.Cmd):
         """emptyline + Enter
         make sure nothing is executed when the line is empty
         """
-        return
+        pass
 
     def do_create(self, model):
         """Create an instance of BaseModel """
