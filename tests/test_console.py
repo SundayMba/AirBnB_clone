@@ -3,11 +3,9 @@
 import os
 import sys
 import unittest
-import console
 import inspect
 from datetime import datetime
 from time import sleep
-HBNBCommand = console.HBNBCommand
 from models import storage
 from models.engine.file_storage import FileStorage
 from console import HBNBCommand
@@ -643,7 +641,8 @@ class TestHBNBCommand_count(unittest.TestCase):
     def test_count_invalid_class(self):
         with patch("sys.stdout", new=StringIO()) as output:
             self.assertFalse(HBNBCommand().onecmd("MyModel.count()"))
-            self.assertEqual("** class doesn't exist **", output.getvalue().strip())
+            test_str = "** class doesn't exist **"
+            self.assertEqual(test_str, output.getvalue().strip())
 
     def test_count_object(self):
         with patch("sys.stdout", new=StringIO()) as output:
