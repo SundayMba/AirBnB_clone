@@ -1,0 +1,109 @@
+h1{
+  font-size: 30px;
+  margin: 20px 20px 0 20px;
+}
+
+.article-container{
+  display: flex;
+  justify-content: center;
+}
+
+.individual-article{
+  border: 1px solid #FF5A5F;
+  margin: 20px;
+  padding: 20px;
+  width: 390px;
+  border-radius: 4px;
+}
+.article-1{
+  display: flex;
+  justify-content: right;
+}
+h2{
+  font-size: 30px;
+  white-space: nowrap;
+}
+
+.last-article{
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 70px;
+}
+.price_by_night{
+  color: #FF5A5F;
+  border: 1px solid #FF5A5F;
+  min-width: 60px;
+  height: 60px;
+  font-size: 30px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 80px;
+}
+
+.information{
+  height: 80px;
+  margin: 10px 0;
+  border-top: 1px solid #DDDDDD;
+  border-bottom: 1px solid #DDDDDD;
+  display: flex;
+  justify-content: center;
+}
+.number_rooms,
+.number_bathrooms,
+.max_guest{
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+p{
+  margin-top: 5px;
+}
+.owner{
+  font-weight: bold;
+}
+.user{
+  margin: 5px 0;
+}
+
+.amenities-list-container h2,
+.reviews h2{
+  margin-top: 40px;
+  border-bottom: 1px solid #DDDDDD;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  font-size: 16px;
+}
+.amenities-list-container ul{
+  display: flex;
+  flex-direction: column;
+  font-size: 8px;
+}
+.amenities-list-container ul li{
+  line-height: 1.5;
+}
+.amenities-list-container ul li span
+{
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+.reviews ul li p{
+  font-size: 12px;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 800px)
+{
+  .article-container{
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    margin: 0 50px;
+  }
+}
